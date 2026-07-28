@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 // --- DATA CONSTANTS ---
-const WHATSAPP_NUMBER = "919999999999"; 
+const WHATSAPP_NUMBER = "916238308605"; 
 const MAP_LINK = "https://maps.google.com/?q=Metal+Fab+Devi+Circle+Vidyaranyapura+Bangalore";
 
 // Just drop your real images into the Vite 'public' folder and match the names here
