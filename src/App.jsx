@@ -899,7 +899,7 @@ export default function App() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
             <AnimatePresence mode="popLayout">
               {displayedItems.map((item) => (
                 <CatalogueCard key={item.id} item={item} onOpenLightbox={openLightbox} />
