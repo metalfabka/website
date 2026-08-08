@@ -19,6 +19,11 @@
 
 html,
 body {
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+}
+
+body {
   touch-action: pan-y;
 }
 .hero {
