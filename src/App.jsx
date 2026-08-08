@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   MessageCircle, ArrowRight, ArrowUpRight, ShieldCheck,
   Hammer, Clock, CheckCircle2, XCircle,
-  MapPin, Phone, Menu, X, LayoutGrid, Search
+  MapPin, Phone, Menu, X, LayoutGrid, Search,
+  ChevronLeft, ChevronRight
 } from 'lucide-react';
 
 // --- DATA CONSTANTS ---
@@ -16,52 +17,54 @@ const NAV_LINKS = [
   { id: "compare", label: "Wood vs Steel" },
 ];
 
-// TEMP: items marked "// TODO: real photo" still point at gate.jpg until you send the actual file.
+// TEMP: items marked "// TODO: real photo" still point at a numbered file until
+// you confirm which real photo it should be. `images` is an array so any item
+// can later hold more than one photo — just add more strings to that array.
 const CATALOGUE_ITEMS = [
   // ---------------- DOORS ----------------
-  { id: 1, title: "Safety Door (210×90 with Frame)", category: "Doors", img: "/catalogue/doors/door-safety.png" },
-  { id: 2, title: "Safety Grill Door with Mosquito Mesh", category: "Doors", img: "/catalogue/doors/image (16).png" }, // TODO: real photo
-  { id: 3, title: "Safety Grill Door", category: "Doors", img: "/gate.jpg" }, // TODO: real photo
-  { id: 4, title: "French Design Door for Balcony", category: "Doors", img: "/catalogue/doors/door-french-modern.png" },
-  { id: 5, title: "4 Fold French Door", category: "Doors", img: "/catalogue/doors/door-four-fold.png" },
-  { id: 6, title: "Balcony French Door", category: "Doors", img: "/catalogue/doors/image (14).png" },
-  { id: 7, title: "Balcony French Design Door", category: "Doors", img: "/gate.jpg" }, // TODO: real photo
-  { id: 8, title: "Balcony Door", category: "Doors", img: "/gate.jpg" }, // TODO: real photo
-  { id: 9, title: "French Door with SS Grill", category: "Doors", img: "/catalogue/doors/image (13).png" },
-  { id: 10, title: "Double Door (Painted)", category: "Doors", img: "/catalogue/doors/image (7).png" },
-  { id: 11, title: "Grill Door", category: "Doors", img: "/gate.jpg" }, // TODO: real photo
-  { id: 12, title: "Door and Glass Model (Pooja Room Door)", category: "Doors", img: "/catalogue/doors/door-glass-panels.png" },
+  { id: 1, title: "Safety Door (210×90 with Frame)", category: "Doors", images: ["/catalogue/doors/door-safety.png"] },
+  { id: 2, title: "Safety Grill Door with Mosquito Mesh", category: "Doors", images: ["/catalogue/doors/image (16).png"] }, // TODO: real photo
+  { id: 3, title: "Safety Grill Door", category: "Doors", images: ["/catalogue/doors/image (17).png"] }, // TODO: real photo
+  { id: 4, title: "French Design Door for Balcony", category: "Doors", images: ["/catalogue/doors/door-french-modern.png"] },
+  { id: 5, title: "4 Fold French Door", category: "Doors", images: ["/catalogue/doors/door-four-fold.png"] },
+  { id: 6, title: "Balcony French Door", category: "Doors", images: ["/catalogue/doors/image (14).png"] },
+  { id: 7, title: "Balcony French Design Door", category: "Doors", images: ["/catalogue/doors/image (18).png"] }, // TODO: real photo
+  { id: 8, title: "Balcony Door", category: "Doors", images: ["/catalogue/doors/image (19).png"] }, // TODO: real photo
+  { id: 9, title: "French Door with SS Grill", category: "Doors", images: ["/catalogue/doors/image (13).png"] },
+  { id: 10, title: "Double Door (Painted)", category: "Doors", images: ["/catalogue/doors/image (7).png"] },
+  { id: 11, title: "Grill Door", category: "Doors", images: ["/catalogue/doors/image (1).png"] }, // TODO: real photo
+  { id: 12, title: "Door and Glass Model (Pooja Room Door)", category: "Doors", images: ["/catalogue/doors/door-glass-panels.png"] },
 
   // ---------------- WINDOWS ----------------
-  { id: 13, title: "Round Window", category: "Windows", img: "/catalogue/windows/window-round.png" },
-  { id: 14, title: "Bay Window", category: "Windows", img: "/gate.jpg" }, // TODO: real photo
-  { id: 15, title: "Corner Window", category: "Windows", img: "/gate.jpg" }, // TODO: real photo
-  { id: 16, title: "Long Window", category: "Windows", img: "/gate.jpg" }, // TODO: real photo
-  { id: 17, title: "Kitchen Window", category: "Windows", img: "/gate.jpg" }, // TODO: real photo
-  { id: 18, title: "Bathroom Ventilator", category: "Windows", img: "/catalogue/windows/window-bathroom-ventilation.png" },
-  { id: 19, title: "Two Panel Window", category: "Windows", img: "/gate.jpg" }, // TODO: real photo
-  { id: 20, title: "Three Panel Window", category: "Windows", img: "/gate.jpg" }, // TODO: real photo
-  { id: 21, title: "Four Panel Window", category: "Windows", img: "/gate.jpg" }, // TODO: real photo
-  { id: 22, title: "Five Panel Window", category: "Windows", img: "/gate.jpg" }, // TODO: real photo
-  { id: 23, title: "Design Window with SS Tubes", category: "Windows", img: "/gate.jpg" }, // TODO: real photo
-  { id: 24, title: "French Window with Mosquito Mesh", category: "Windows", img: "/gate.jpg" }, // TODO: real photo
-  { id: 25, title: "Window with SS Grill", category: "Windows", img: "/gate.jpg" }, // TODO: real photo
-  { id: 26, title: "GI Window with Design", category: "Windows", img: "/gate.jpg" }, // TODO: real photo
+  { id: 13, title: "Round Window", category: "Windows", images: ["/catalogue/windows/window-round.png"] },
+  { id: 14, title: "Bay Window", category: "Windows", images: ["/catalogue/doors/image (20).png"] }, // TODO: real photo
+  { id: 15, title: "Corner Window", category: "Windows", images: ["/catalogue/doors/image (21).png"] }, // TODO: real photo
+  { id: 16, title: "Long Window", category: "Windows", images: ["/catalogue/doors/image (22).png"] }, // TODO: real photo
+  { id: 17, title: "Kitchen Window", category: "Windows", images: ["/catalogue/doors/image (23).png"] }, // TODO: real photo
+  { id: 18, title: "Bathroom Ventilator", category: "Windows", images: ["/catalogue/windows/window-bathroom-ventilation.png"] },
+  { id: 19, title: "Two Panel Window", category: "Windows", images: ["/catalogue/doors/image (24).png"] }, // TODO: real photo
+  { id: 20, title: "Three Panel Window", category: "Windows", images: ["/catalogue/doors/image (25).png"] }, // TODO: real photo
+  { id: 21, title: "Four Panel Window", category: "Windows", images: ["/catalogue/doors/image (26).png"] }, // TODO: real photo
+  { id: 22, title: "Five Panel Window", category: "Windows", images: ["/catalogue/doors/image (27).png"] }, // TODO: real photo
+  { id: 23, title: "Design Window with SS Tubes", category: "Windows", images: ["/catalogue/doors/image (28).png"] }, // TODO: real photo
+  { id: 24, title: "French Window with Mosquito Mesh", category: "Windows", images: ["/catalogue/doors/image (29).png"] }, // TODO: real photo
+  { id: 25, title: "Window with SS Grill", category: "Windows", images: ["/catalogue/doors/image (30).png"] }, // TODO: real photo
+  { id: 26, title: "GI Window with Design", category: "Windows", images: ["/catalogue/doors/image (31).png"] }, // TODO: real photo
 
   // ---------------- FRAMES ----------------
-  { id: 27, title: "Door Frame (3×7, No Bottom Frame)", category: "Frames", img: "/gate.jpg" }, // TODO: real photo
-  { id: 28, title: "Door Frame (9×6)", category: "Frames", img: "/gate.jpg" }, // TODO: real photo
-  { id: 29, title: "Arch Door Frame with Windows", category: "Frames", img: "/gate.jpg" }, // TODO: real photo
+  { id: 27, title: "Door Frame (3×7)", category: "Frames", images: ["/catalogue/doors/image (33).png"] }, // TODO: real photo
+  { id: 28, title: "Door Frame (9×6)", category: "Frames", images: ["/catalogue/doors/image (32).png"] }, // TODO: real photo
+  { id: 29, title: "Arch Door Frame with Windows", category: "Frames", images: ["/catalogue/doors/image (12).png"] }, // TODO: real photo
 
   // ---------------- ACCESSORIES ----------------
-  { id: 30, title: "Window Latch", category: "Accessories", img: "/gate.jpg" }, // TODO: real photo
-  { id: 31, title: "Automatic Window Latch", category: "Accessories", img: "/gate.jpg" }, // TODO: real photo
+  { id: 30, title: "Window Latch", category: "Accessories", images: ["/catalogue/doors/image (1).png"] }, // TODO: real photo
+  { id: 31, title: "Automatic Window Latch", category: "Accessories", images: ["/catalogue/doors/image (34).png"] }, // TODO: real photo
 
   // ---------------- SPECIAL DESIGNS ----------------
-  { id: 32, title: "Door Cum Window", category: "Special Designs", img: "/gate.jpg" }, // TODO: real photo
-  { id: 33, title: "Door Cum Window with Mosquito Mesh", category: "Special Designs", img: "/gate.jpg" }, // TODO: real photo
-  { id: 34, title: "French Door Cum Window", category: "Special Designs", img: "/gate.jpg" }, // TODO: real photo
-  { id: 35, title: "Door with Attached Window", category: "Special Designs", img: "/catalogue/special/door-with-window-attached.png" },
+  { id: 32, title: "Door Cum Window", category: "Special Designs", images: ["/catalogue/doors/image (36).png"] }, // TODO: real photo
+  { id: 33, title: "Door Cum Window with Mosquito Mesh", category: "Special Designs", images: ["/catalogue/doors/image (35).png"] }, // TODO: real photo
+  { id: 34, title: "French Door Cum Window", category: "Special Designs", images: ["/catalogue/doors/image (37).png"] }, // TODO: real photo
+  { id: 35, title: "Door with Attached Window", category: "Special Designs", images: ["/catalogue/special/door-with-window-attached.png"] },
 ];
 
 const MARQUEE_ITEMS = [
@@ -273,8 +276,108 @@ const CutoutCorner = ({ className = "", size = 32 }) => (
   </svg>
 );
 
+// --- LIGHTBOX (full preview on click, with close + prev/next when multi-image) ---
+function Lightbox({ item, index, onClose, onPrev, onNext }) {
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowLeft") onPrev();
+      if (e.key === "ArrowRight") onNext();
+    };
+    window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [onClose, onPrev, onNext]);
+
+  if (!item) return null;
+  const hasMultiple = item.images.length > 1;
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        key="lightbox-backdrop"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+        className="fixed inset-0 z-[1000] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-10"
+        onClick={onClose}
+        role="dialog"
+        aria-modal="true"
+        aria-label={item.title}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close preview"
+          className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full p-2.5 transition-colors"
+        >
+          <X size={22} />
+        </button>
+
+        {hasMultiple && (
+          <>
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onPrev(); }}
+              aria-label="Previous image"
+              className="absolute left-2 sm:left-6 z-10 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full p-2 sm:p-3 transition-colors"
+            >
+              <ChevronLeft size={26} />
+            </button>
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onNext(); }}
+              aria-label="Next image"
+              className="absolute right-2 sm:right-6 z-10 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full p-2 sm:p-3 transition-colors"
+            >
+              <ChevronRight size={26} />
+            </button>
+          </>
+        )}
+
+        <div className="flex flex-col items-center gap-4 max-w-full max-h-full" onClick={(e) => e.stopPropagation()}>
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={item.images[index]}
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.97 }}
+              transition={{ duration: 0.18 }}
+              src={item.images[index]}
+              alt={item.title}
+              className="max-w-[90vw] max-h-[75vh] sm:max-h-[80vh] object-contain rounded-sm"
+            />
+          </AnimatePresence>
+
+          <div className="text-center">
+            <p className="text-white font-semibold text-sm sm:text-base">{item.title}</p>
+            {hasMultiple && (
+              <div className="mt-2 flex items-center justify-center gap-1.5">
+                {item.images.map((_, i) => (
+                  <span
+                    key={i}
+                    className={`h-1.5 rounded-full transition-all ${i === index ? "w-5 bg-industrial" : "w-1.5 bg-white/40"}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 // --- CATALOGUE CARD ---
-function CatalogueCard({ item }) {
+function CatalogueCard({ item, onOpenLightbox }) {
+  const [imgIndex, setImgIndex] = useState(0);
+  const hasMultiple = item.images.length > 1;
+
   const whatsappMessage = encodeURIComponent(
     `Hi MetalFab,
 
@@ -289,6 +392,15 @@ Could you please share:
 
 Thank you.`
   );
+
+  const goPrev = (e) => {
+    e.stopPropagation();
+    setImgIndex((i) => (i - 1 + item.images.length) % item.images.length);
+  };
+  const goNext = (e) => {
+    e.stopPropagation();
+    setImgIndex((i) => (i + 1) % item.images.length);
+  };
 
   return (
     <motion.div
@@ -311,10 +423,26 @@ Thank you.`
             box-shadow, never transforms. */}
         <div className="bg-[#070b10] border border-steel-800 rounded-sm overflow-hidden transition-colors duration-300 group-hover:border-industrial">
 
-          {/* IMAGE */}
-          <div className="relative overflow-hidden aspect-[4/3]">
+          {/* IMAGE — click opens the fullscreen preview. The prev/next
+              arrows are real <button>s that stopPropagation, so clicking
+              them cycles the card's own thumbnail without opening the
+              lightbox. They only render at all when there's more than
+              one photo for this item. */}
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => onOpenLightbox(item, imgIndex)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onOpenLightbox(item, imgIndex);
+              }
+            }}
+            aria-label={`View full image of ${item.title}`}
+            className="relative overflow-hidden aspect-[4/3] cursor-zoom-in"
+          >
             <img
-              src={item.img}
+              src={item.images[imgIndex]}
               alt={item.title}
               loading="lazy"
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -325,6 +453,30 @@ Thank you.`
                 Made to Order
               </span>
             </div>
+
+            {hasMultiple && (
+              <>
+                <button
+                  type="button"
+                  onClick={goPrev}
+                  aria-label="Previous photo"
+                  className="absolute left-1.5 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-1 sm:p-1.5 transition-opacity opacity-0 group-hover:opacity-100 focus:opacity-100"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <button
+                  type="button"
+                  onClick={goNext}
+                  aria-label="Next photo"
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-1 sm:p-1.5 transition-opacity opacity-0 group-hover:opacity-100 focus:opacity-100"
+                >
+                  <ChevronRight size={16} />
+                </button>
+                <span className="absolute bottom-1.5 right-1.5 bg-black/60 text-white text-[9px] font-semibold px-1.5 py-0.5 rounded-full">
+                  {imgIndex + 1}/{item.images.length}
+                </span>
+              </>
+            )}
           </div>
 
           {/* CONTENT */}
@@ -393,6 +545,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [showAllProducts, setShowAllProducts] = useState(false);
+  const [lightbox, setLightbox] = useState(null); // { item, index } | null
   const marqueeOrder = useMemo(() => shuffle(MARQUEE_ITEMS), []);
 
   useEffect(() => {
@@ -440,6 +593,13 @@ export default function App() {
       window.scrollTo({ top: (elementRect - bodyRect) - offset, behavior: 'smooth' });
     }
   };
+
+  const openLightbox = (item, index) => setLightbox({ item, index });
+  const closeLightbox = () => setLightbox(null);
+  const prevLightboxImage = () =>
+    setLightbox((lb) => lb && { ...lb, index: (lb.index - 1 + lb.item.images.length) % lb.item.images.length });
+  const nextLightboxImage = () =>
+    setLightbox((lb) => lb && { ...lb, index: (lb.index + 1) % lb.item.images.length });
 
   return (
     <div className="min-h-screen bg-[#0a0f16] text-steel-100 font-sans selection:bg-industrial selection:text-white pb-6 lg:pb-0">
@@ -742,7 +902,7 @@ export default function App() {
           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
             <AnimatePresence mode="popLayout">
               {displayedItems.map((item) => (
-                <CatalogueCard key={item.id} item={item} />
+                <CatalogueCard key={item.id} item={item} onOpenLightbox={openLightbox} />
               ))}
               {displayedItems.length === 0 && (
                 <div className="col-span-full text-center py-20">
@@ -912,6 +1072,16 @@ export default function App() {
       >
         <MessageCircle size={28} />
       </a>
+
+      {lightbox && (
+        <Lightbox
+          item={lightbox.item}
+          index={lightbox.index}
+          onClose={closeLightbox}
+          onPrev={prevLightboxImage}
+          onNext={nextLightboxImage}
+        />
+      )}
     </div>
   );
 }
