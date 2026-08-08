@@ -17,6 +17,10 @@
   }
 }
 
+html,
+body {
+  touch-action: pan-y;
+}
 .hero {
   position: relative;
 
