@@ -409,7 +409,7 @@ Thank you.`
   animate={{ opacity: 1, y: 0 }}
   exit={{ opacity: 0 }}
   transition={{ duration: .3 }}
-  className="w-full max-w-[380px] mx-auto sm:max-w-none"
+  className="w-full max-w-[320px] mx-auto sm:max-w-none"
 >
       {/* Outer wrapper: transform + shadow ONLY, and crucially NOT clipped
           (no overflow-hidden here). The earlier flicker was caused by
