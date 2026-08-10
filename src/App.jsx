@@ -917,8 +917,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-10 md:mb-12">
             <h2 className="text-5xl font-display font-black uppercase text-white mb-4">Steel Windows, Doors & Custom Fabrication</h2>
-            <p className="text-steel-400 max-w-xl">Browse our collection of premium steel doors, windows,
-              frames and custom fabricated products.
+            <p className="text-steel-400 max-w-xl">Browse our collection of premium steel windows, doors, frames and custom fabricated products.
 
               Every product is manufactured according to your
               required dimensions, finish and design.</p>
