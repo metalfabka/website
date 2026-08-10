@@ -8,7 +8,14 @@ import {
 } from 'lucide-react';
 
 // --- DATA CONSTANTS ---
-const WHATSAPP_NUMBER = "916238308605";
+// Client confirmed 2026-08-10: 8951953005 is the main WhatsApp number for
+// the "Get Quote" buttons everywhere. 8951359005 is listed separately in
+// the footer as a second contact line until the client tells us what it's
+// actually for (sales/support/etc.) — swap the label below once known.
+const WHATSAPP_NUMBER = "918951953005";
+const WHATSAPP_NUMBER_ALT = "918951359005";
+// Plain call number (not WhatsApp) — shown separately in the footer.
+const CALL_NUMBER = "919744999595";
 const MAP_LINK = "https://maps.google.com/?q=Metal+Fab+Devi+Circle+Vidyaranyapura+Bangalore";
 
 const NAV_LINKS = [
@@ -20,20 +27,22 @@ const NAV_LINKS = [
 // TEMP: items marked "// TODO: real photo" still point at a numbered file until
 // you confirm which real photo it should be. `images` is an array so any item
 // can later hold more than one photo — just add more strings to that array.
+//
+// Client priority (2026-08-10): Windows and Doors matter most, Windows
+// before Doors — reflected in both this array's order and the tab order
+// below. Within each, French Door / French Window / Balcony Door are
+// bumped to the front. Distinct designs are kept as separate cards (so a
+// WhatsApp quote request is unambiguous about which one someone wants);
+// the multi-photo carousel is reserved for multiple photos of the SAME
+// design, not for grouping different designs together.
 const CATALOGUE_ITEMS = [
-  // ---------------- DOORS ----------------
-  { id: 1, title: "Safety Door (210×90 with Frame)", category: "Doors", images: ["/catalogue/doors/door-safety.png"] },
-  { id: 2, title: "Safety Grill Door with Mosquito Mesh", category: "Doors", images: ["/catalogue/doors/image (16).png"] }, // TODO: real photo
-  { id: 3, title: "Safety Grill Door", category: "Doors", images: ["/catalogue/doors/image (17).png"] }, // TODO: real photo
-  { id: 4, title: "French Design Door for Balcony", category: "Doors", images: ["/catalogue/doors/door-french-modern.png"] },
+  // ---------------- TOP PRIORITY (client request, 2026-08-10) ----------------
+  // One representative of each of the three types they called out — shown
+  // first in "All" and still first within their own category tab, since
+  // filtering preserves array order.
   { id: 5, title: "4 Fold French Door", category: "Doors", images: ["/catalogue/doors/door-four-fold.png"] },
-  { id: 6, title: "Balcony French Door", category: "Doors", images: ["/catalogue/doors/image (14).png"] },
-  { id: 7, title: "Balcony French Design Door", category: "Doors", images: ["/catalogue/doors/image (18).png"] }, // TODO: real photo
+  { id: 24, title: "French Window with Mosquito Mesh", category: "Windows", images: ["/catalogue/doors/image (29).png"] }, // TODO: real photo — more French Window designs to come
   { id: 8, title: "Balcony Door", category: "Doors", images: ["/catalogue/doors/image (19).png"] }, // TODO: real photo
-  { id: 9, title: "French Door with SS Grill", category: "Doors", images: ["/catalogue/doors/image (13).png"] },
-  { id: 10, title: "Double Door (Painted)", category: "Doors", images: ["/catalogue/doors/image (7).png"] },
-  { id: 11, title: "Grill Door", category: "Doors", images: ["/catalogue/doors/image (1).png"] }, // TODO: real photo
-  { id: 12, title: "Door and Glass Model (Pooja Room Door)", category: "Doors", images: ["/catalogue/doors/door-glass-panels.png"] },
 
   // ---------------- WINDOWS ----------------
   { id: 13, title: "Round Window", category: "Windows", images: ["/catalogue/windows/window-round.png"] },
@@ -47,9 +56,20 @@ const CATALOGUE_ITEMS = [
   { id: 21, title: "Four Panel Window", category: "Windows", images: ["/catalogue/doors/image (26).png"] }, // TODO: real photo
   { id: 22, title: "Five Panel Window", category: "Windows", images: ["/catalogue/doors/image (27).png"] }, // TODO: real photo
   { id: 23, title: "Design Window with SS Tubes", category: "Windows", images: ["/catalogue/doors/image (28).png"] }, // TODO: real photo
-  { id: 24, title: "French Window with Mosquito Mesh", category: "Windows", images: ["/catalogue/doors/image (29).png"] }, // TODO: real photo
   { id: 25, title: "Window with SS Grill", category: "Windows", images: ["/catalogue/doors/image (30).png"] }, // TODO: real photo
   { id: 26, title: "GI Window with Design", category: "Windows", images: ["/catalogue/doors/image (31).png"] }, // TODO: real photo
+
+  // ---------------- DOORS ----------------
+  { id: 4, title: "French Design Door for Balcony", category: "Doors", images: ["/catalogue/doors/door-french-modern.png"] },
+  { id: 9, title: "French Door with SS Grill", category: "Doors", images: ["/catalogue/doors/image (13).png"] },
+  { id: 6, title: "Balcony French Door", category: "Doors", images: ["/catalogue/doors/image (14).png"] },
+  { id: 7, title: "Balcony French Design Door", category: "Doors", images: ["/catalogue/doors/image (18).png"] }, // TODO: real photo
+  { id: 1, title: "Safety Door (210×90 with Frame)", category: "Doors", images: ["/catalogue/doors/door-safety.png"] },
+  { id: 2, title: "Safety Grill Door with Mosquito Mesh", category: "Doors", images: ["/catalogue/doors/image (16).png"] }, // TODO: real photo
+  { id: 3, title: "Safety Grill Door", category: "Doors", images: ["/catalogue/doors/image (17).png"] }, // TODO: real photo
+  { id: 10, title: "Double Door (Painted)", category: "Doors", images: ["/catalogue/doors/image (7).png"] },
+  { id: 11, title: "Grill Door", category: "Doors", images: ["/catalogue/doors/image (1).png"] }, // TODO: real photo
+  { id: 12, title: "Door and Glass Model (Pooja Room Door)", category: "Doors", images: ["/catalogue/doors/door-glass-panels.png"] },
 
   // ---------------- FRAMES ----------------
   { id: 27, title: "Door Frame (3×7)", category: "Frames", images: ["/catalogue/doors/image (33).png"] }, // TODO: real photo
@@ -68,6 +88,7 @@ const CATALOGUE_ITEMS = [
 ];
 
 const MARQUEE_ITEMS = [
+  "Tata Galvanized 16-Gauge Steel",
   "10-Year Structural Warranty",
   "100% Rust-Proof",
   "Termite & Pest Resistant",
@@ -342,16 +363,21 @@ function Lightbox({ item, index, onClose, onPrev, onNext }) {
 
         <div className="flex flex-col items-center gap-4 max-w-full max-h-full" onClick={(e) => e.stopPropagation()}>
           <AnimatePresence mode="wait">
-            <motion.img
+            <motion.div
               key={item.images[index]}
               initial={{ opacity: 0, scale: 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.97 }}
               transition={{ duration: 0.18 }}
-              src={item.images[index]}
-              alt={item.title}
-              className="max-w-[90vw] max-h-[75vh] sm:max-h-[80vh] object-contain rounded-sm"
-            />
+              className="relative inline-block max-w-[90vw] max-h-[75vh] sm:max-h-[80vh]"
+            >
+              <img
+                src={item.images[index]}
+                alt={item.title}
+                className="block max-w-[90vw] max-h-[75vh] sm:max-h-[80vh] object-contain rounded-sm"
+              />
+              <Watermark />
+            </motion.div>
           </AnimatePresence>
 
           <div className="text-center">
@@ -372,6 +398,51 @@ function Lightbox({ item, index, onClose, onPrev, onNext }) {
     </AnimatePresence>
   );
 }
+
+// --- WATERMARK ---
+// Repeating, semi-transparent wordmark rendered on top of every catalogue
+// thumbnail and the lightbox image. pointer-events-none so it never blocks
+// clicks/taps on the card, prev/next arrows, etc. Uses React.useId() to give
+// each instance its own <pattern> id — reusing one fixed id across many
+// sibling SVGs on the same page (one per catalogue card) is invalid SVG and
+// can render inconsistently across browsers.
+// Note: this is a display-time overlay, not baked into the image files —
+// good enough to deter casual reposting, but not permanent. Say the word if
+// you want it burned into the actual files as a batch job instead.
+const Watermark = ({ opacity = 0.16 }) => {
+  const rawId = React.useId();
+  const patternId = `metalfab-wm-${rawId.replace(/[^a-zA-Z0-9]/g, "")}`;
+  return (
+    <svg
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 w-full h-full"
+      style={{ opacity, mixBlendMode: "overlay" }}
+    >
+      <defs>
+        <pattern
+          id={patternId}
+          width="170"
+          height="100"
+          patternUnits="userSpaceOnUse"
+          patternTransform="rotate(-28)"
+        >
+          <text
+            x="0"
+            y="55"
+            fontFamily="Poppins, ui-sans-serif, sans-serif"
+            fontWeight="700"
+            fontSize="20"
+            fill="white"
+            letterSpacing="2"
+          >
+            METALFAB
+          </text>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill={`url(#${patternId})`} />
+    </svg>
+  );
+};
 
 // --- CATALOGUE CARD ---
 function CatalogueCard({ item, onOpenLightbox }) {
@@ -404,13 +475,13 @@ Thank you.`
 
   return (
     <motion.div
-  layout="position"
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  exit={{ opacity: 0 }}
-  transition={{ duration: .3 }}
-  className="w-full max-w-[320px] mx-auto sm:max-w-none"
->
+      layout="position"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: .3 }}
+      className="w-full max-w-[320px] mx-auto sm:max-w-none"
+    >
       {/* Outer wrapper: transform + shadow ONLY, and crucially NOT clipped
           (no overflow-hidden here). The earlier flicker was caused by
           animating box-shadow on the same element that clips its content
@@ -448,6 +519,7 @@ Thank you.`
               loading="lazy"
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
+            <Watermark />
             <div className="absolute inset-0 bg-gradient-to-t from-[#070b10]/25 via-transparent to-transparent" />
             <div className="absolute top-2 left-2 sm:top-3 sm:left-3">
               <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 bg-industrial text-black text-[8px] sm:text-[9px] uppercase font-bold tracking-wider rounded-sm">
@@ -506,8 +578,8 @@ Thank you.`
 
 // --- FEATURES ---
 const FEATURES = [
-  { icon: ShieldCheck, title: "Unmatched Security", text: "Reinforced steel joints provide exponentially higher security than standard wood frames." },
-  { icon: Clock, title: "Lifetime Longevity", text: "Treated for anti-rust and corrosion - install it once and never worry about it again." },
+  { icon: ShieldCheck, title: "Unmatched Security", text: "Fabricated from Tata galvanized 16-gauge steel, with reinforced joints that provide exponentially higher security than standard wood frames." },
+  { icon: Clock, title: "Lifetime Longevity", text: "Every seam is filled with automotive-grade metal body filler, sealed under an epoxy primer, then powder-coated, treated for anti-rust and corrosion so you install it once and never worry about it again." },
   { icon: LayoutGrid, title: "Precision Customization", text: "Every door, window, and structure is laser-measured and fabricated to your exact site dimensions." },
 ];
 
@@ -683,7 +755,7 @@ export default function App() {
               transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
               className="text-lg md:text-2xl text-steel-300 mb-10 max-w-2xl leading-relaxed"
             >
-              Replace outdated, warping woodwork with premium steel doors and window frames. Built tough for permanent longevity and an industrial aesthetic.
+              Replace outdated, warping woodwork with premium steel windows and door frames. Built tough for permanent longevity and an industrial aesthetic.
             </motion.p>
 
             <motion.div
@@ -741,7 +813,7 @@ export default function App() {
               Built Different
             </h2>
             <p className="text-steel-400 text-sm md:text-base leading-relaxed">
-              What actually happens at the joint, the surface, and the cut — not just why it's better.
+              What actually happens at the joint, the surface, and the cut, not just why it's better.
             </p>
           </div>
 
@@ -768,6 +840,19 @@ export default function App() {
                   <rect x="70" y="60" width="300" height="70" fill="#0d131b" />
                   <rect x="70" y="60" width="70" height="260" fill="#0d131b" />
                 </g>
+
+                {/* Material stamp: mill-mark style label on the steel body,
+                    like a real gauge/grade stamp on fabricated stock. */}
+                <text
+                  x="105"
+                  y="250"
+                  transform="rotate(-90 105 250)"
+                  textAnchor="middle"
+                  className="text-steel-500 font-mono text-[10px] uppercase tracking-wider"
+                  fill="currentColor"
+                >
+                  Tata Galv. 16GA
+                </text>
 
                 {/* Laser-cut edge: kerf tick marks along the outer left edge */}
                 <g className="text-steel-500" stroke="currentColor" strokeWidth="1.5">
@@ -831,7 +916,7 @@ export default function App() {
       <section id="catalogue" className="pt-12 pb-32 md:py-32 bg-[#070b10] border-t border-steel-800/30">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-10 md:mb-12">
-            <h2 className="text-5xl font-display font-black uppercase text-white mb-4">Steel Doors, Windows & Custom Fabrication</h2>
+            <h2 className="text-5xl font-display font-black uppercase text-white mb-4">Steel Windows, Doors & Custom Fabrication</h2>
             <p className="text-steel-400 max-w-xl">Browse our collection of premium steel doors, windows,
               frames and custom fabricated products.
 
@@ -851,8 +936,8 @@ export default function App() {
             <div className="flex flex-nowrap md:flex-wrap gap-2 overflow-x-auto md:overflow-visible hide-scrollbar snap-x snap-mandatory md:snap-none scroll-smooth pb-2">
               {[
                 "All",
-                "Doors",
                 "Windows",
+                "Doors",
                 "Frames",
                 "Accessories",
                 "Special Designs",
@@ -892,7 +977,7 @@ export default function App() {
               />
               <input
                 type="text"
-                placeholder="Search doors, windows..."
+                placeholder="Search windows, doors..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-12 pr-5 py-3 rounded-full bg-[#0a0f16] border border-steel-800 text-white placeholder:text-steel-500 outline-none focus:border-industrial transition"
@@ -1021,9 +1106,15 @@ export default function App() {
                 <Clock className="text-industrial shrink-0" size={24} />
                 <p>Monday – Saturday | 9:00 AM – 8:00 PM</p>
               </div>
-              <div className="flex items-center gap-4 hover:text-white transition-colors cursor-default">
+              <div className="flex items-center gap-4 hover:text-white transition-colors">
                 <Phone className="text-industrial shrink-0" size={24} />
-                <p>+91 {WHATSAPP_NUMBER.slice(2)}</p>
+                <a href={`tel:+${CALL_NUMBER}`} className="hover:underline">+91 {CALL_NUMBER.slice(2)}</a>
+              </div>
+              <div className="flex items-center gap-4 hover:text-white transition-colors">
+                <MessageCircle className="text-industrial shrink-0" size={24} />
+                <a href={`https://wa.me/${WHATSAPP_NUMBER_ALT}`} target="_blank" rel="noreferrer" className="hover:underline">
+                  +91 {WHATSAPP_NUMBER_ALT.slice(2)} <span className="text-steel-500">(also WhatsApp)</span>
+                </a>
               </div>
             </div>
 
