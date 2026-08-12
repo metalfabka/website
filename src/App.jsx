@@ -8,41 +8,52 @@ import {
 } from 'lucide-react';
 
 // --- DATA CONSTANTS ---
-// Client confirmed 2026-08-10: 8951953005 is the main WhatsApp number for
-// the "Get Quote" buttons everywhere. 8951359005 is listed separately in
-// the footer as a second contact line until the client tells us what it's
-// actually for (sales/support/etc.) — swap the label below once known.
+// 8951953005 = main WhatsApp (all "Get Quote" buttons). 8951359005 = second
+// number, shown only in the footer contact list.
 const WHATSAPP_NUMBER = "918951953005";
 const WHATSAPP_NUMBER_ALT = "918951359005";
-// Plain call number (not WhatsApp) — shown separately in the footer.
+// Plain call number (not WhatsApp), shown separately in the footer.
 const CALL_NUMBER = "919744999595";
 const MAP_LINK = "https://maps.google.com/?q=Metal+Fab+Devi+Circle+Vidyaranyapura+Bangalore";
 
 const NAV_LINKS = [
+  { id: "about", label: "About" },
   { id: "features", label: "Why Steel" },
   { id: "catalogue", label: "Catalogue" },
   { id: "compare", label: "Wood vs Steel" },
 ];
 
-// TEMP: items marked "// TODO: real photo" still point at a numbered file until
-// you confirm which real photo it should be. `images` is an array so any item
-// can later hold more than one photo — just add more strings to that array.
-//
-// Client priority (2026-08-10): Windows and Doors matter most, Windows
-// before Doors — reflected in both this array's order and the tab order
-// below. Within each, French Door / French Window / Balcony Door are
-// bumped to the front. Distinct designs are kept as separate cards (so a
-// WhatsApp quote request is unambiguous about which one someone wants);
-// the multi-photo carousel is reserved for multiple photos of the SAME
-// design, not for grouping different designs together.
+// `images` is an array — items with more than one photo get a carousel
+// automatically (see CatalogueCard/Lightbox). Windows/Doors are ordered
+// first, with French Door/Window and Balcony Door leading each.
 const CATALOGUE_ITEMS = [
-  // ---------------- TOP PRIORITY (client request, 2026-08-10) ----------------
-  // One representative of each of the three types they called out — shown
-  // first in "All" and still first within their own category tab, since
-  // filtering preserves array order.
+  // ---------------- TOP PRIORITY ----------------
+  { id: 24, title: "French Window with Mosquito Mesh", category: "Windows", images: [
+    "/catalogue/doors/image (29).png",
+    "/catalogue/doors/image (29)-1.png",
+    "/catalogue/doors/image (29)-2.png",
+    "/catalogue/doors/image (29)-3.png",
+  ] },
+  { id: 36, title: "French Doors", category: "Doors", images: [
+  "/catalogue/doors/f1.png",
+  "/catalogue/doors/f2.png",
+  "/catalogue/doors/f3.png",
+  "/catalogue/doors/f4.png",
+  "/catalogue/doors/f5.png",
+  "/catalogue/doors/f6.png",
+] },
   { id: 5, title: "4 Fold French Door", category: "Doors", images: ["/catalogue/doors/door-four-fold.png"] },
-  { id: 24, title: "French Window with Mosquito Mesh", category: "Windows", images: ["/catalogue/doors/image (29).png"] }, // TODO: real photo — more French Window designs to come
-  { id: 8, title: "Balcony Door", category: "Doors", images: ["/catalogue/doors/image (19).png"] }, // TODO: real photo
+  
+  { id: 6, title: "Balcony French Door", category: "Doors", images: [
+    "/catalogue/doors/image (14).png",
+    "/catalogue/doors/image (14)-1.png",
+    "/catalogue/doors/image (14)-2.png",
+  ] },
+  { id: 8, title: "Balcony Door", category: "Doors", images: [
+    "/catalogue/doors/image (19).png",
+    "/catalogue/doors/image (19)-1.png",
+    "/catalogue/doors/image (19)-2.png",
+  ] }, // TODO: real photo
 
   // ---------------- WINDOWS ----------------
   { id: 13, title: "Round Window", category: "Windows", images: ["/catalogue/windows/window-round.png"] },
@@ -60,9 +71,9 @@ const CATALOGUE_ITEMS = [
   { id: 26, title: "GI Window with Design", category: "Windows", images: ["/catalogue/doors/image (31).png"] }, // TODO: real photo
 
   // ---------------- DOORS ----------------
+  
   { id: 4, title: "French Design Door for Balcony", category: "Doors", images: ["/catalogue/doors/door-french-modern.png"] },
   { id: 9, title: "French Door with SS Grill", category: "Doors", images: ["/catalogue/doors/image (13).png"] },
-  { id: 6, title: "Balcony French Door", category: "Doors", images: ["/catalogue/doors/image (14).png"] },
   { id: 7, title: "Balcony French Design Door", category: "Doors", images: ["/catalogue/doors/image (18).png"] }, // TODO: real photo
   { id: 1, title: "Safety Door (210×90 with Frame)", category: "Doors", images: ["/catalogue/doors/door-safety.png"] },
   { id: 2, title: "Safety Grill Door with Mosquito Mesh", category: "Doors", images: ["/catalogue/doors/image (16).png"] }, // TODO: real photo
@@ -125,9 +136,8 @@ const NoiseOverlay = () => (
   />
 );
 
-// Global helper styles: hide-scrollbar actually needs real CSS (Tailwind has
-// no built-in utility for this) — without it the browser's native scrollbar
-// still renders regardless of the class name being present.
+// Real CSS for hiding scrollbars (Tailwind has no built-in for this) and
+// a themed page scrollbar to match the industrial palette.
 const GlobalStyles = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
@@ -136,9 +146,8 @@ const GlobalStyles = () => (
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
 
-    /* Page scrollbar, restyled to match the steel/industrial theme instead
-       of the browser's default grey bar. Firefox uses scrollbar-color;
-       Chrome/Edge/Safari use the ::-webkit-scrollbar pseudo-elements. */
+    /* Themed page scrollbar (Firefox via scrollbar-color, others via
+       ::-webkit-scrollbar). */
     html {
       scrollbar-color: #ff5a1f #0a0f16;
       scrollbar-width: thin;
@@ -400,15 +409,11 @@ function Lightbox({ item, index, onClose, onPrev, onNext }) {
 }
 
 // --- WATERMARK ---
-// Repeating, semi-transparent wordmark rendered on top of every catalogue
-// thumbnail and the lightbox image. pointer-events-none so it never blocks
-// clicks/taps on the card, prev/next arrows, etc. Uses React.useId() to give
-// each instance its own <pattern> id — reusing one fixed id across many
-// sibling SVGs on the same page (one per catalogue card) is invalid SVG and
-// can render inconsistently across browsers.
-// Note: this is a display-time overlay, not baked into the image files —
-// good enough to deter casual reposting, but not permanent. Say the word if
-// you want it burned into the actual files as a batch job instead.
+// Repeating "METALFAB" overlay on every thumbnail + lightbox image.
+// pointer-events-none so it never blocks clicks. useId() gives each
+// instance its own pattern id (needed since many cards render at once).
+// Display-time only, not baked into the files — fine to deter casual
+// reposting, not a permanent fix.
 const Watermark = ({ opacity = 0.16 }) => {
   const rawId = React.useId();
   const patternId = `metalfab-wm-${rawId.replace(/[^a-zA-Z0-9]/g, "")}`;
@@ -460,6 +465,7 @@ Could you please share:
 • Available sizes
 • Colour options
 • Delivery & Installation details
+• Material type
 
 Thank you.`
   );
@@ -482,24 +488,16 @@ Thank you.`
       transition={{ duration: .3 }}
       className="w-full max-w-[320px] mx-auto sm:max-w-none"
     >
-      {/* Outer wrapper: transform + shadow ONLY, and crucially NOT clipped
-          (no overflow-hidden here). The earlier flicker was caused by
-          animating box-shadow on the same element that clips its content
-          with rounded overflow-hidden — Chrome has to recompute the clip
-          mask and the shadow together each frame, and for one frame the
-          rounded edge briefly shows unclipped. Keeping the shadow on this
-          unclipped wrapper and the clipping on the inner wrapper (border
-          color only, never shadow) removes that recompute entirely. */}
+      {/* Outer wrapper stays unclipped (no overflow-hidden) so the hover
+          shadow doesn't fight with the inner wrapper's rounded clip —
+          animating both on the same clipped element caused a 1-frame
+          flicker on the rounded corner. */}
       <div className="group transform-gpu rounded-sm transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_15px_45px_rgba(255,90,31,.12)]">
-        {/* Inner wrapper: border + radius + clip ONLY. Never animates
-            box-shadow, never transforms. */}
+        {/* Inner wrapper: border + clip only, never animated. */}
         <div className="bg-[#070b10] border border-steel-800 rounded-sm overflow-hidden transition-colors duration-300 group-hover:border-industrial">
 
-          {/* IMAGE — click opens the fullscreen preview. The prev/next
-              arrows are real <button>s that stopPropagation, so clicking
-              them cycles the card's own thumbnail without opening the
-              lightbox. They only render at all when there's more than
-              one photo for this item. */}
+          {/* Click opens the lightbox. Prev/next arrows stopPropagation so
+              they cycle the thumbnail without opening it. */}
           <div
             role="button"
             tabIndex={0}
@@ -580,7 +578,7 @@ Thank you.`
 const FEATURES = [
   { icon: ShieldCheck, title: "Unmatched Security", text: "Fabricated from Tata galvanized 16-gauge steel, with reinforced joints that provide exponentially higher security than standard wood frames." },
   { icon: Clock, title: "Lifetime Longevity", text: "Every seam is filled with automotive-grade metal body filler, sealed under an epoxy primer, then powder-coated, treated for anti-rust and corrosion so you install it once and never worry about it again." },
-  { icon: LayoutGrid, title: "Precision Customization", text: "Every door, window, and structure is laser-measured and fabricated to your exact site dimensions." },
+  { icon: LayoutGrid, title: "Precision Customization", text: "Every window, door, and structure is laser-measured and fabricated to your exact site dimensions." },
 ];
 
 const WeldingSparks = () => {
@@ -675,7 +673,7 @@ export default function App() {
     setLightbox((lb) => lb && { ...lb, index: (lb.index + 1) % lb.item.images.length });
 
   return (
-    <div className="min-h-screen bg-[#0a0f16] text-steel-100 font-sans selection:bg-industrial selection:text-white pb-6 lg:pb-0">
+    <div className="min-h-screen bg-[#0a0f16] text-steel-100 font-sans selection:bg-industrial selection:text-white lg:pb-0">
       <NoiseOverlay />
       <GlobalStyles />
 
@@ -795,16 +793,30 @@ export default function App() {
         </motion.div>
       </div>
 
+      {/* --- ABOUT SECTION --- */}
+      <section id="about" className="py-14 md:py-24 bg-[#0a0f16]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="max-w-2xl">
+            <span className="block w-10 h-1 bg-industrial mb-6" />
+            <h2 className="text-4xl md:text-5xl font-display font-black uppercase text-white leading-[0.95] mb-5">
+              About MetalFab
+            </h2>
+            <p className="text-steel-400 text-base md:text-lg leading-relaxed mb-4">
+              We fabricate GI galvanized steel windows and doors out of our shop on Yelahanka Main Road, near Devi Circle in Bangalore.
+            </p>
+            <p className="text-steel-400 text-sm md:text-base leading-relaxed mb-4">
+              From there, we serve clients across South India, working on residential homes, commercial buildings, and industrial sites alike.
+            </p>
+            <p className="text-steel-400 text-sm md:text-base leading-relaxed">
+              Every window and door is engineered in-house, cut, welded, and finished to your exact site measurements before it ever leaves the shop.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* --- FEATURES SECTION ---
-          Rethought from scratch: instead of restating the same three
-          sentences as three parallel visual units (icon columns, then
-          numbered rows), this treats them as annotations on an actual
-          cross-section of a fabricated steel corner joint — the weld,
-          the coating, the cut edge — the way a fabricator's own shop
-          drawing would call them out. The three facts still exist (they're
-          real, user-provided, not invented), but the reader meets them as
-          labels on a drawing over a blueprint grid, then as a legend below
-          it — not as three identical boxes. */}
+          A shop-drawing cross-section instead of an icon grid: the same
+          three facts, shown as callouts on a steel corner joint. */}
       <section id="features" className="py-14 md:py-28 bg-[#0a0f16] border-y border-steel-800/40">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-12 md:mb-16 max-w-xl">
@@ -818,13 +830,8 @@ export default function App() {
           </div>
 
           <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
-            {/* Shop-drawing illustration: an L-shaped steel corner bracket
-                over a faint blueprint grid, with three leader lines calling
-                out the weld, the coating, and the cut edge. Everything —
-                shapes, grid, leader lines, labels — lives inside one SVG
-                viewBox, so it stays perfectly registered at every width
-                instead of drifting like HTML-overlay callouts would on
-                resize. */}
+            {/* Everything lives in one SVG viewBox so it stays registered
+                at every width instead of drifting like HTML overlays. */}
             <div className="relative">
               <svg viewBox="0 0 520 380" className="w-full h-auto" role="img" aria-label="Cross-section diagram of a steel corner bracket showing the weld seam, powder-coat surface, and laser-cut edge">
                 <defs>
@@ -841,8 +848,7 @@ export default function App() {
                   <rect x="70" y="60" width="70" height="260" fill="#0d131b" />
                 </g>
 
-                {/* Material stamp: mill-mark style label on the steel body,
-                    like a real gauge/grade stamp on fabricated stock. */}
+                {/* Material stamp, mill-mark style */}
                 <text
                   x="105"
                   y="250"
@@ -923,14 +929,9 @@ export default function App() {
               required dimensions, finish and design.</p>
           </div>
 
-          {/* Desktop has room for all six tabs, so it never scrolls — they
-              wrap left-to-right onto a second line if the viewport is
-              narrow, same as a normal line of text (not right-justified,
-              which stranded the last tab alone on the far right).
-              Below md, where they don't all fit on one line, it becomes a
-              swipeable strip: native scrollbar hidden via .hide-scrollbar,
-              snap points so a swipe lands cleanly on a tab, and a soft edge
-              fade (not a scrollbar) hinting there's more to the side. */}
+          {/* Tabs wrap on desktop (fits without scrolling). Below md they
+              scroll horizontally with the native scrollbar hidden, snap
+              points per tab, and edge fades hinting more content. */}
           <div className="relative w-full mb-16">
             <div className="flex flex-nowrap md:flex-wrap gap-2 overflow-x-auto md:overflow-visible hide-scrollbar snap-x snap-mandatory md:snap-none scroll-smooth pb-2">
               {[
@@ -947,8 +948,11 @@ export default function App() {
                   className={`
                     snap-start
                     px-5 py-2.5
-                    rounded-full
-                    text-sm
+                    rounded-sm
+                    font-mono
+                    text-xs
+                    uppercase
+                    tracking-wider
                     font-semibold
                     whitespace-nowrap
                     transition-all
@@ -1092,7 +1096,7 @@ export default function App() {
 
       {/* --- FOOTER & CONTACT --- */}
       <HazardStripe className="h-1.5" />
-      <footer className="bg-[#05080c] pt-24 pb-8">
+      <footer className="bg-[#05080c] pt-24 pb-1">
         <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 mb-16">
           <div>
             <h2 className="text-4xl font-display font-black text-white uppercase mb-8">Ready to upgrade?</h2>
@@ -1134,8 +1138,8 @@ export default function App() {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-6 pt-8 border-t border-steel-900 flex flex-col md:flex-row justify-between items-center gap-3">
-          <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 text-center text-steel-500 text-sm uppercase tracking-widest font-bold">
+        <div className="max-w-7xl mx-auto px-6 pt-8 border-t border-steel-900 flex flex-col items-center gap-3 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col items-center gap-2 text-center text-steel-500 text-sm uppercase tracking-widest font-bold md:flex-row md:gap-4">
             <p>© {new Date().getFullYear()} MetalFab.</p>
             <p>Built for Resilience.</p>
           </div>
@@ -1144,10 +1148,10 @@ export default function App() {
             href="https://iedcmesce.org/"
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-1.5 text-steel-600 hover:text-steel-400 text-[10px] uppercase tracking-widest transition-colors"
+            className="self-end opacity-60 hover:opacity-100 flex items-center gap-1.5 text-steel-600 hover:text-steel-400 text-[10px] uppercase tracking-widest transition-opacity md:self-auto md:opacity-100"
           >
             <span>Powered by</span>
-            <img src="/iedc-logo.png" alt="IEDC MESCE" className="w-4 h-4 rounded-sm bg-steel-800 border border-steel-700 object-contain p-0.5" />
+            <img src="/iedc-logo.png" alt="IEDC MESCE" className="w-[18px] h-[18px] object-contain" />
             <span className="font-semibold text-steel-500">IEDC MESCE</span>
           </a>
         </div>
