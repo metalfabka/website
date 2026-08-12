@@ -28,32 +28,21 @@ const NAV_LINKS = [
 // first, with French Door/Window and Balcony Door leading each.
 const CATALOGUE_ITEMS = [
   // ---------------- TOP PRIORITY ----------------
-  { id: 24, title: "French Window with Mosquito Mesh", category: "Windows", images: [
-    "/catalogue/doors/image (29).png",
-    "/catalogue/doors/image (29)-1.png",
-    "/catalogue/doors/image (29)-2.png",
-    "/catalogue/doors/image (29)-3.png",
-  ] },
   { id: 36, title: "French Doors", category: "Doors", images: [
   "/catalogue/doors/f1.png",
   "/catalogue/doors/f2.png",
   "/catalogue/doors/f3.png",
   "/catalogue/doors/f4.png",
   "/catalogue/doors/f5.png",
-  "/catalogue/doors/f6.png",
 ] },
   { id: 5, title: "4 Fold French Door", category: "Doors", images: ["/catalogue/doors/door-four-fold.png"] },
-  
-  { id: 6, title: "Balcony French Door", category: "Doors", images: [
-    "/catalogue/doors/image (14).png",
-    "/catalogue/doors/image (14)-1.png",
-    "/catalogue/doors/image (14)-2.png",
+  { id: 24, title: "French Window with Mosquito Mesh", category: "Windows", images: [
+    "/catalogue/doors/image (29).png",
+    "/catalogue/doors/image (29)-1.png",
+    "/catalogue/doors/image (29)-2.png",
+    "/catalogue/doors/image (29)-3.png",
   ] },
-  { id: 8, title: "Balcony Door", category: "Doors", images: [
-    "/catalogue/doors/image (19).png",
-    "/catalogue/doors/image (19)-1.png",
-    "/catalogue/doors/image (19)-2.png",
-  ] }, // TODO: real photo
+  { id: 8, title: "Balcony Door", category: "Doors", images: ["/catalogue/doors/image (19).png"] }, // TODO: real photo
 
   // ---------------- WINDOWS ----------------
   { id: 13, title: "Round Window", category: "Windows", images: ["/catalogue/windows/window-round.png"] },
@@ -74,6 +63,7 @@ const CATALOGUE_ITEMS = [
   
   { id: 4, title: "French Design Door for Balcony", category: "Doors", images: ["/catalogue/doors/door-french-modern.png"] },
   { id: 9, title: "French Door with SS Grill", category: "Doors", images: ["/catalogue/doors/image (13).png"] },
+  { id: 6, title: "Balcony French Door", category: "Doors", images: ["/catalogue/doors/image (14).png"] },
   { id: 7, title: "Balcony French Design Door", category: "Doors", images: ["/catalogue/doors/image (18).png"] }, // TODO: real photo
   { id: 1, title: "Safety Door (210×90 with Frame)", category: "Doors", images: ["/catalogue/doors/door-safety.png"] },
   { id: 2, title: "Safety Grill Door with Mosquito Mesh", category: "Doors", images: ["/catalogue/doors/image (16).png"] }, // TODO: real photo
@@ -409,45 +399,26 @@ function Lightbox({ item, index, onClose, onPrev, onNext }) {
 }
 
 // --- WATERMARK ---
-// Repeating "METALFAB" overlay on every thumbnail + lightbox image.
-// pointer-events-none so it never blocks clicks. useId() gives each
-// instance its own pattern id (needed since many cards render at once).
+// Centered semi-transparent stamp on every thumbnail + lightbox image, using
+// the actual flyer's logo/wordmark/contact block (background removed — see
+// /public/watermark-flyer.png). Not tiled: this has real detail (address,
+// phone numbers), so repeating it small would turn into an unreadable smudge
+// the way the old plain-text pattern could.
 // Display-time only, not baked into the files — fine to deter casual
-// reposting, not a permanent fix.
-const Watermark = ({ opacity = 0.16 }) => {
-  const rawId = React.useId();
-  const patternId = `metalfab-wm-${rawId.replace(/[^a-zA-Z0-9]/g, "")}`;
-  return (
-    <svg
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-0 w-full h-full"
-      style={{ opacity, mixBlendMode: "overlay" }}
-    >
-      <defs>
-        <pattern
-          id={patternId}
-          width="170"
-          height="100"
-          patternUnits="userSpaceOnUse"
-          patternTransform="rotate(-28)"
-        >
-          <text
-            x="0"
-            y="55"
-            fontFamily="Poppins, ui-sans-serif, sans-serif"
-            fontWeight="700"
-            fontSize="20"
-            fill="white"
-            letterSpacing="2"
-          >
-            METALFAB
-          </text>
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill={`url(#${patternId})`} />
-    </svg>
-  );
-};
+// reposting, not a permanent fix. Place watermark-flyer.png in /public.
+// --- WATERMARK ---
+// Small opaque badge of the actual flyer, tucked in a corner — not a large
+// transparent overlay across the whole photo. Place watermark-flyer-full.jpg
+// in /public.
+const Watermark = ({ src = "/watermark-flyer-full.jpeg" }) => (
+  <img
+    src={src}
+    alt=""
+    aria-hidden="true"
+    draggable={false}
+    className="pointer-events-none select-none absolute bottom-2 right-2 w-[30%] max-w-[110px] rounded-sm shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
+  />
+);
 
 // --- CATALOGUE CARD ---
 function CatalogueCard({ item, onOpenLightbox }) {
