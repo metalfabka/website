@@ -42,7 +42,17 @@ const CATALOGUE_ITEMS = [
     "/catalogue/doors/image (29)-2.png",
     "/catalogue/doors/image (29)-3.png",
   ] },
-  { id: 8, title: "Balcony Door", category: "Doors", images: ["/catalogue/doors/image (19).png"] }, // TODO: real photo
+  { id: 6, title: "Balcony French Door", category: "Doors", images: [
+    "/catalogue/doors/image (14).png",
+    "/catalogue/doors/image (14)-1.png",
+    "/catalogue/doors/image (14)-2.png",
+
+  ] },
+  { id: 8, title: "Balcony Door", category: "Doors", images: [
+    "/catalogue/doors/image (19).png",
+    "/catalogue/doors/image (19)-1.png",
+    "/catalogue/doors/image (19)-2.png",
+  ] }, // TODO: real photo
 
   // ---------------- WINDOWS ----------------
   { id: 13, title: "Round Window", category: "Windows", images: ["/catalogue/windows/window-round.png"] },
@@ -63,7 +73,6 @@ const CATALOGUE_ITEMS = [
   
   { id: 4, title: "French Design Door for Balcony", category: "Doors", images: ["/catalogue/doors/door-french-modern.png"] },
   { id: 9, title: "French Door with SS Grill", category: "Doors", images: ["/catalogue/doors/image (13).png"] },
-  { id: 6, title: "Balcony French Door", category: "Doors", images: ["/catalogue/doors/image (14).png"] },
   { id: 7, title: "Balcony French Design Door", category: "Doors", images: ["/catalogue/doors/image (18).png"] }, // TODO: real photo
   { id: 1, title: "Safety Door (210×90 with Frame)", category: "Doors", images: ["/catalogue/doors/door-safety.png"] },
   { id: 2, title: "Safety Grill Door with Mosquito Mesh", category: "Doors", images: ["/catalogue/doors/image (16).png"] }, // TODO: real photo
@@ -370,12 +379,10 @@ function Lightbox({ item, index, onClose, onPrev, onNext }) {
               transition={{ duration: 0.18 }}
               className="relative inline-block max-w-[90vw] max-h-[75vh] sm:max-h-[80vh]"
             >
-              <img
-                src={item.images[index]}
-                alt={item.title}
-                className="block max-w-[90vw] max-h-[75vh] sm:max-h-[80vh] object-contain rounded-sm"
-              />
-              <Watermark />
+              <BakedWatermarkImage
+  src={item.images[index]}
+  alt={item.title}
+/>
             </motion.div>
           </AnimatePresence>
 
@@ -410,16 +417,105 @@ function Lightbox({ item, index, onClose, onPrev, onNext }) {
 // Small opaque badge of the actual flyer, tucked in a corner — not a large
 // transparent overlay across the whole photo. Place watermark-flyer-full.jpg
 // in /public.
-const Watermark = ({ src = "/watermark-flyer-full.jpeg" }) => (
+const CatalogueWatermark = () => (
   <img
-    src={src}
+    src="/watermark-compact.png"
     alt=""
     aria-hidden="true"
     draggable={false}
-    className="pointer-events-none select-none absolute bottom-2 right-2 w-[30%] max-w-[110px] rounded-sm shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
+    className="pointer-events-none select-none absolute bottom-1.5 right-1.5 w-[22%] max-w-[75px] rounded-sm"
   />
 );
 
+const BakedWatermarkImage = ({ src, alt }) => {
+  const [bakedSrc, setBakedSrc] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const bakeWatermark = async () => {
+      try {
+        const image = new Image();
+        image.crossOrigin = "anonymous";
+
+        const watermark = new Image();
+        watermark.crossOrigin = "anonymous";
+
+        await Promise.all([
+          new Promise((resolve, reject) => {
+            image.onload = resolve;
+            image.onerror = reject;
+            image.src = src;
+          }),
+          new Promise((resolve, reject) => {
+            watermark.onload = resolve;
+            watermark.onerror = reject;
+            watermark.src = "/watermark-flyer-full.jpeg";
+          }),
+        ]);
+
+        if (cancelled) return;
+
+        const canvas = document.createElement("canvas");
+        canvas.width = image.naturalWidth;
+        canvas.height = image.naturalHeight;
+
+        const ctx = canvas.getContext("2d");
+
+        // Draw original product image
+        ctx.drawImage(image, 0, 0);
+
+        // Same compact corner positioning as the current Lightbox watermark
+        const maxWatermarkWidth = 260;
+        const watermarkWidth = Math.min(
+          canvas.width * 0.30,
+          maxWatermarkWidth
+        );
+
+        const watermarkHeight =
+          watermark.naturalHeight *
+          (watermarkWidth / watermark.naturalWidth);
+
+        const padding = Math.max(8, canvas.width * 0.015);
+
+        const x = canvas.width - watermarkWidth - padding;
+        const y = canvas.height - watermarkHeight - padding;
+
+        ctx.drawImage(
+          watermark,
+          x,
+          y,
+          watermarkWidth,
+          watermarkHeight
+        );
+
+        if (!cancelled) {
+          setBakedSrc(canvas.toDataURL("image/png"));
+        }
+      } catch (error) {
+        console.error("Failed to bake watermark:", error);
+
+        if (!cancelled) {
+          setBakedSrc(src);
+        }
+      }
+    };
+
+    bakeWatermark();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [src]);
+
+  return (
+    <img
+      src={bakedSrc || src}
+      alt={alt}
+      className="block max-w-[90vw] max-h-[75vh] sm:max-h-[80vh] object-contain rounded-sm"
+    />
+  );
+};
 // --- CATALOGUE CARD ---
 function CatalogueCard({ item, onOpenLightbox }) {
   const [imgIndex, setImgIndex] = useState(0);
@@ -488,7 +584,7 @@ Thank you.`
               loading="lazy"
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
-            <Watermark />
+            <CatalogueWatermark />
             <div className="absolute inset-0 bg-gradient-to-t from-[#070b10]/25 via-transparent to-transparent" />
             <div className="absolute top-2 left-2 sm:top-3 sm:left-3">
               <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 bg-industrial text-black text-[8px] sm:text-[9px] uppercase font-bold tracking-wider rounded-sm">
