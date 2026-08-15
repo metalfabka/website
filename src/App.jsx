@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   MessageCircle, ArrowRight, ArrowUpRight, ShieldCheck,
@@ -28,6 +28,12 @@ const NAV_LINKS = [
 // first, with French Door/Window and Balcony Door leading each.
 const CATALOGUE_ITEMS = [
   // ---------------- TOP PRIORITY ----------------
+  { id: 24, title: "French Window with Mosquito Mesh", category: "Windows", images: [
+    "/catalogue/doors/image (29).png",
+    "/catalogue/doors/image (29)-1.png",
+    "/catalogue/doors/image (29)-2.png",
+    "/catalogue/doors/image (29)-3.png",
+  ] },
   { id: 36, title: "French Doors", category: "Doors", images: [
   "/catalogue/doors/f1.png",
   "/catalogue/doors/f2.png",
@@ -36,12 +42,7 @@ const CATALOGUE_ITEMS = [
   "/catalogue/doors/f5.png",
 ] },
   { id: 5, title: "4 Fold French Door", category: "Doors", images: ["/catalogue/doors/door-four-fold.png"] },
-  { id: 24, title: "French Window with Mosquito Mesh", category: "Windows", images: [
-    "/catalogue/doors/image (29).png",
-    "/catalogue/doors/image (29)-1.png",
-    "/catalogue/doors/image (29)-2.png",
-    "/catalogue/doors/image (29)-3.png",
-  ] },
+
   { id: 6, title: "Balcony French Door", category: "Doors", images: [
     "/catalogue/doors/image (14).png",
     "/catalogue/doors/image (14)-1.png",
@@ -307,15 +308,40 @@ const CutoutCorner = ({ className = "", size = 32 }) => (
 
 // --- LIGHTBOX (full preview on click, with close + prev/next when multi-image) ---
 function Lightbox({ item, index, onClose, onPrev, onNext }) {
+  const closeBtnRef = useRef(null);
+  const dialogRef = useRef(null);
+
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
       if (e.key === "ArrowLeft") onPrev();
       if (e.key === "ArrowRight") onNext();
+
+      // Minimal focus trap: keep Tab cycling within the dialog instead of
+      // escaping to elements behind the backdrop.
+      if (e.key === "Tab" && dialogRef.current) {
+        const focusable = dialogRef.current.querySelectorAll(
+          'button, [href], input, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
     window.addEventListener("keydown", onKey);
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    closeBtnRef.current?.focus();
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = prevOverflow;
@@ -338,8 +364,10 @@ function Lightbox({ item, index, onClose, onPrev, onNext }) {
         role="dialog"
         aria-modal="true"
         aria-label={item.title}
+        ref={dialogRef}
       >
         <button
+          ref={closeBtnRef}
           type="button"
           onClick={onClose}
           aria-label="Close preview"
@@ -406,17 +434,17 @@ function Lightbox({ item, index, onClose, onPrev, onNext }) {
 }
 
 // --- WATERMARK ---
-// Centered semi-transparent stamp on every thumbnail + lightbox image, using
-// the actual flyer's logo/wordmark/contact block (background removed — see
-// /public/watermark-flyer.png). Not tiled: this has real detail (address,
-// phone numbers), so repeating it small would turn into an unreadable smudge
-// the way the old plain-text pattern could.
-// Display-time only, not baked into the files — fine to deter casual
-// reposting, not a permanent fix. Place watermark-flyer.png in /public.
-// --- WATERMARK ---
-// Small opaque badge of the actual flyer, tucked in a corner — not a large
-// transparent overlay across the whole photo. Place watermark-flyer-full.jpg
-// in /public.
+// Small opaque badge of the actual flyer, tucked in a corner of every
+// thumbnail (CatalogueWatermark, /watermark-compact.png). Display-time
+// only — deters casual reposting of thumbnails but isn't baked into the
+// file itself.
+//
+// In the lightbox we go a step further: BakedWatermarkImage draws the
+// full-res photo onto a canvas together with /watermark-flyer-full.jpeg
+// and serves the flattened PNG, so the watermark survives a right-click
+// "save image as" on the full-size view. If that fails for any reason
+// (e.g. a tainted canvas), it falls back to the plain unwatermarked src
+// rather than breaking the preview.
 const CatalogueWatermark = () => (
   <img
     src="/watermark-compact.png"
@@ -642,10 +670,13 @@ Thank you.`
 }
 
 // --- FEATURES ---
-const FEATURES = [
-  { icon: ShieldCheck, title: "Unmatched Security", text: "Fabricated from Tata galvanized 16-gauge steel, with reinforced joints that provide exponentially higher security than standard wood frames." },
-  { icon: Clock, title: "Lifetime Longevity", text: "Every seam is filled with automotive-grade metal body filler, sealed under an epoxy primer, then powder-coated, treated for anti-rust and corrosion so you install it once and never worry about it again." },
-  { icon: LayoutGrid, title: "Precision Customization", text: "Every window, door, and structure is laser-measured and fabricated to your exact site dimensions." },
+// Read by the "Built Different" section's <dl> legend (see App below),
+// keyed to the weld-seam / powder-coat / laser-cut-edge callouts in the
+// blueprint SVG. Only the copy is needed there, so this is just text.
+const FEATURES_TEXT = [
+  "Fabricated from Tata galvanized 16-gauge steel, with reinforced joints that provide exponentially higher security than standard wood frames.",
+  "Every seam is filled with automotive-grade metal body filler, sealed under an epoxy primer, then powder-coated, treated for anti-rust and corrosion so you install it once and never worry about it again.",
+  "Every window, door, and structure is laser-measured and fabricated to your exact site dimensions.",
 ];
 
 const WeldingSparks = () => {
@@ -686,10 +717,27 @@ export default function App() {
   const [lightbox, setLightbox] = useState(null); // { item, index } | null
   const marqueeOrder = useMemo(() => shuffle(MARQUEE_ITEMS), []);
 
+  // Skip the very first run of the catalogue-scroll effect below — it
+  // fires on mount too (activeTab starts at "All"), which used to yank
+  // every visitor straight past the hero and down to the catalogue on
+  // page load. Only actual tab changes after mount should scroll.
+  const isFirstTabRender = useRef(true);
+
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // The browser's own scroll-restoration tries to put you back where you
+  // were before a reload — on a single-page site like this, that's what
+  // was making a refresh appear to "jump" to the catalogue (or wherever
+  // you'd scrolled to). Turn it off and force the page to open at the top.
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
@@ -700,12 +748,23 @@ export default function App() {
   }, [mobileMenuOpen]);
 
   useEffect(() => {
+    if (isFirstTabRender.current) {
+      isFirstTabRender.current = false;
+      return;
+    }
     const section = document.getElementById("catalogue");
     section?.scrollIntoView({
       behavior: "smooth",
       block: "start"
     });
   }, [activeTab]);
+
+  // Collapse back to the default 18-item view whenever the filter changes,
+  // so switching tabs/searching after expanding doesn't leave a huge list
+  // open under an unrelated tab.
+  useEffect(() => {
+    setShowAllProducts(false);
+  }, [activeTab, searchTerm]);
 
   const filteredItems = CATALOGUE_ITEMS.filter((item) => {
     const matchesCategory =
@@ -970,15 +1029,15 @@ export default function App() {
             <dl className="space-y-6 sm:space-y-7">
               <div className="border-t border-steel-800 pt-5">
                 <dt className="font-mono text-industrial text-xs uppercase tracking-wider mb-2">Weld seam</dt>
-                <dd className="text-steel-400 text-sm sm:text-base leading-relaxed">{FEATURES[0].text}</dd>
+                <dd className="text-steel-400 text-sm sm:text-base leading-relaxed">{FEATURES_TEXT[0]}</dd>
               </div>
               <div className="border-t border-steel-800 pt-5">
                 <dt className="font-mono text-industrial text-xs uppercase tracking-wider mb-2">Powder coat</dt>
-                <dd className="text-steel-400 text-sm sm:text-base leading-relaxed">{FEATURES[1].text}</dd>
+                <dd className="text-steel-400 text-sm sm:text-base leading-relaxed">{FEATURES_TEXT[1]}</dd>
               </div>
               <div className="border-t border-b border-steel-800 py-5">
                 <dt className="font-mono text-industrial text-xs uppercase tracking-wider mb-2">Laser-cut edge</dt>
-                <dd className="text-steel-400 text-sm sm:text-base leading-relaxed">{FEATURES[2].text}</dd>
+                <dd className="text-steel-400 text-sm sm:text-base leading-relaxed">{FEATURES_TEXT[2]}</dd>
               </div>
             </dl>
           </div>
