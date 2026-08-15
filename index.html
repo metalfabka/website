@@ -2,36 +2,80 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    
+
     <!-- 1. Dynamic Inline SVG Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='15' fill='%23FF5A1F'/><text x='50%' y='52%' font-family='Arial, sans-serif' font-weight='900' font-size='65' fill='white' dominant-baseline='middle' text-anchor='middle'>M</text></svg>" />
-    
+
     <meta
   name="viewport"
   content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover"
 />
-    
+
     <!-- 2. SEO Meta Description (For Google) -->
     <meta name="description" content="Premium custom steel doors, windows, and fabrication in Bangalore. Replace outdated woodwork with permanent, secure steel structures." />
-    
+
+    <!-- Canonical URL — tells search engines this is the one true copy of
+         the page. Important here since the same content is also reachable
+         through the other 5 registered domains; this keeps them from
+         being treated as duplicate content splitting ranking signal. -->
+    <link rel="canonical" href="https://metalfabka.in/" />
+
     <!-- ========================================== -->
     <!-- 3. OPEN GRAPH TAGS (For WhatsApp Shares)   -->
     <!-- ========================================== -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="MetalFab | Premium Steel Fabrication" />
     <meta property="og:description" content="Custom steel doors & windows in Bangalore. 10-Year Warranty. 100% Rust-Proof. Request a quote today." />
-    
-    <!-- PLACEHOLDERS: We will update these two lines once you deploy to Vercel -->
-    <meta property="og:url" content="https://metalfab.safeel.in/" />
-    <meta property="og:image" content="https://metalfab.safeel.in/share-banner.jpg" />
-    
+    <meta property="og:url" content="https://metalfabka.in/" />
+    <meta property="og:image" content="https://metalfabka.in/share-banner.jpg" />
+    <meta property="og:locale" content="en_IN" />
+
+    <!-- ========================================== -->
+    <!-- 3b. TWITTER / X CARD TAGS                   -->
+    <!-- WhatsApp/Facebook read Open Graph above, but X does not fall     -->
+    <!-- back to OG reliably — needs its own tags for a real preview.     -->
+    <!-- ========================================== -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="MetalFab | Premium Steel Fabrication" />
+    <meta name="twitter:description" content="Custom steel doors & windows in Bangalore. 10-Year Warranty. 100% Rust-Proof. Request a quote today." />
+    <meta name="twitter:image" content="https://metalfabka.in/share-banner.jpg" />
+
     <!-- 4. Typography Imports -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    
+
     <!-- 5. Branded Browser Tab Title -->
     <title>MetalFab | Premium Steel Fabrication in Bangalore</title>
+
+    <!-- 6. Structured data — lets Google show MetalFab as a local        -->
+    <!-- business (address, hours, phone) directly in search results,    -->
+    <!-- built from the same details already in the site footer.         -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HomeAndConstructionBusiness",
+      "name": "MetalFab",
+      "image": "https://metalfabka.in/share-banner.jpg",
+      "url": "https://metalfabka.in/",
+      "telephone": "+919744999595",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "No. 1, Near Devi Circle, Yelahanka Main Road, Vidyaranyapura",
+        "addressLocality": "Bangalore",
+        "addressRegion": "Karnataka",
+        "postalCode": "560097",
+        "addressCountry": "IN"
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "opens": "09:00",
+        "closes": "20:00"
+      },
+      "areaServed": "Bangalore, Karnataka"
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
