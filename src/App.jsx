@@ -717,12 +717,6 @@ export default function App() {
   const [lightbox, setLightbox] = useState(null); // { item, index } | null
   const marqueeOrder = useMemo(() => shuffle(MARQUEE_ITEMS), []);
 
-  // Skip the very first run of the catalogue-scroll effect below — it
-  // fires on mount too (activeTab starts at "All"), which used to yank
-  // every visitor straight past the hero and down to the catalogue on
-  // page load. Only actual tab changes after mount should scroll.
-  const isFirstTabRender = useRef(true);
-
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
@@ -746,18 +740,6 @@ export default function App() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [mobileMenuOpen]);
-
-  useEffect(() => {
-    if (isFirstTabRender.current) {
-      isFirstTabRender.current = false;
-      return;
-    }
-    const section = document.getElementById("catalogue");
-    section?.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  }, [activeTab]);
 
   // Collapse back to the default 18-item view whenever the filter changes,
   // so switching tabs/searching after expanding doesn't leave a huge list
@@ -1070,7 +1052,12 @@ export default function App() {
               ].map(tab => (
                 <button
                   key={tab}
-                  onClick={() => setActiveTab(tab)}
+                  onClick={() => {
+                    if (tab !== activeTab) {
+                      setActiveTab(tab);
+                      scrollTo("catalogue");
+                    }
+                  }}
                   className={`
                     snap-start
                     px-5 py-2.5
